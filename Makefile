@@ -55,11 +55,7 @@ docker-publish:
 
 .PHONY: run # Run the application
 run:
-	@echo "⚠️ 'run' unimplemented"
-	# GO Projects
-	# @go run main.go
-	# Node Projects
-	# @npm start
+	@npx http-server ./src
 
 .PHONY: ci # Perform CI specific tasks to perform on a pull request
 ci:
