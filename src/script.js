@@ -32,7 +32,7 @@ function setWidth(value) {
       showInteractions: true
     },
     bskyPost: {
-      url: 'https://bsky.app/profile/averagemarcus.bsky.social/post/3lujs2efm5s2f',
+      url: 'https://bsky.app/profile/averagemarcus.bsky.social/post/3lwyxxwjnxc2k',
       handle: '',
       displayName: '',
       avatar: '',
