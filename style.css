@@ -1,0 +1,263 @@
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.form {
+  display: flex;
+}
+.form * {
+  margin: 2px;
+}
+
+.post-wrapper {
+  overflow: hidden;
+  position: relative;
+}
+#post {
+  background: transparent;
+  position: absolute;
+  left: -9999;
+  top: -9999;
+  width: 600px;
+  margin-left: -10px;
+}
+
+.link {
+  color: rgb(16, 131, 254);
+}
+
+.border {
+  background: #fff;
+  border-radius: 22px;
+  border-color: rgba(180, 180, 178, 0.56);
+  border-style: double;
+  border-width: 2px;
+}
+.border .windowDecoration {
+  height: 34px;
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  justify-content: space-around;
+}
+.border .windowDecoration .buttons {
+  display: flex;
+  gap: 6px;
+  padding: 7px;
+}
+.border .windowDecoration .buttons .roundButton {
+  border-radius: 9999px;
+  border-width: 1px;
+  border-style: solid;
+  background-color: rgba(38, 34, 23, 0.9);
+  opacity: 0.9;
+  width: 10px;
+  height: 10px;
+}
+
+.border .windowDecoration .title {
+  text-align: center;
+  font-size: 16px;
+  letter-spacing: 0px;
+  color: rgb(66, 87, 108);
+  line-height: 20px;
+  font-family: InterVariable, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  font-variant: no-contextual;
+}
+
+.post {
+  width: 600px;
+  padding: 8px;
+}
+.post .header {
+  width: 100%;
+  display: flex;
+  gap: 12px;
+  flex-direction: row;
+  padding-bottom: 12px;
+}
+.post .header .avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 21px;
+}
+.post .header .displayName {
+  font-size: 16.875px;
+  letter-spacing: 0px;
+  color: rgb(11, 15, 20);
+  flex-shrink: 1;
+  font-weight: 600;
+  line-height: 22px;
+  font-family: InterVariable, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  font-variant: no-contextual;
+}
+.post .header .handle {
+  font-size: 15px;
+  letter-spacing: 0px;
+  color: rgb(66, 87, 108);
+  line-height: 20px;
+  font-family: InterVariable, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  font-variant: no-contextual;
+}
+
+.post .body {
+  width: 100%;
+  font-size: 18.75px;
+  letter-spacing: 0px;
+  color: rgb(11, 15, 20);
+  line-height: 24px;
+  flex: 1 1 0%;
+  font-family: InterVariable, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  font-variant: no-contextual;
+}
+.post .embeds {
+  display: flex;
+}
+.post .images {
+  gap: 6px;
+  display: flex;
+  border-radius: 12px;
+  overflow: hidden;
+  flex-direction: row;
+  align-content: flex-start;
+  align-items: stretch;
+  flex-wrap: wrap;
+}
+.post .images > div {
+  aspect-ratio: 1 / 1;
+  flex: 1 0 48%;
+}
+.post .images img {
+  vertical-align: middle;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.post .images > div:nth-child(2) {
+  grid-column: 2;
+}
+.post .images > div:nth-child(3) {
+  grid-row: 2;
+  grid-column: 1;
+}
+.post .images > div:nth-child(4) {
+  grid-row: 2;
+  grid-column: 2;
+}
+
+.post .externalLink {
+  flex-direction: column;
+  border-radius: 12px;
+  overflow: hidden;
+  width: 100%;
+  border-width: 1px;
+  border-style: solid;
+  margin-top: 8px;
+  border-color: rgb(212, 219, 226);
+}
+.post .externalLink .linkMeta {
+  gap: 3px;
+  padding-bottom: 4px;
+  padding-left: 12px;
+  padding-right: 12px;
+  padding-top: 8px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-color: rgb(212, 219, 226);
+}
+.post .externalLink .linkTitle {
+  font-size: 15px;
+  letter-spacing: 0px;
+  color: rgb(11, 15, 20);
+  font-weight: 600;
+  line-height: 20px;
+  font-family: InterVariable, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  font-variant: no-contextual;
+}
+.post .externalLink .linkDescription {
+  padding-top: 6px;
+  padding-bottom: 6px;
+  font-size: 13.125px;
+  letter-spacing: 0px;
+  color: rgb(11, 15, 20);
+  line-height: 17px;
+  font-family: InterVariable, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  font-variant: no-contextual;
+}
+.post .externalLink .linkDomain {
+  padding-bottom: 8px;
+  padding-top: 6px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-color: rgb(212, 219, 226);
+  font-size: 11.25px;
+  letter-spacing: 0px;
+  color: rgb(66, 87, 108);
+  line-height: 15px;
+  font-family: InterVariable, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  font-variant: no-contextual;
+}
+
+.post .footer {
+  width: 100%;
+  padding-top: 12px;
+  display: flex;
+  justify-content: space-between;
+  border-color: rgb(212, 219, 226);
+  border-top-style: solid;
+  border-top-width: 1px;
+  margin-top: 12px;
+  padding-left: 4px;
+  padding-right: 8px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+.post .footer .createdAt {
+  font-size: 15px;
+  letter-spacing: 0px;
+  color: rgb(119, 129, 140);
+  line-height: 15px;
+  font-family: InterVariable, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  font-variant: no-contextual;
+}
+.post .footer .interactions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+}
+.post .footer .replies,
+.post .footer .reposts,
+.post .footer .likes {
+  font-size: 15px;
+  letter-spacing: 0px;
+  color: rgb(119, 129, 140);
+  stroke: rgb(119, 129, 140);
+  line-height: 15px;
+  font-family: InterVariable, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  font-variant: no-contextual;
+}
+.post .footer .replies>svg,
+.post .footer .reposts>svg,
+.post .footer .likes>svg {
+  height: 20px;
+  margin-bottom: -5px;
+}
+.post .footer .replies>span,
+.post .footer .reposts>span,
+.post .footer .likes>span {
+  font-size: 15px;
+  letter-spacing: 0px;
+  font-weight: 600;
+  line-height: 15px;
+  font-family: InterVariable, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  font-variant: no-contextual;
+}
+
+#download, #result-image {
+  display: block;
+  margin: 30px auto;
+}

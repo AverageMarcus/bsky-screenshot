@@ -1,6 +1,6 @@
 .DEFAULT_GOAL := default
 
-IMAGE ?= rg.fr-par.scw.cloud/averagemarcus-private/bsky-screenshot:latest
+IMAGE ?= rg.fr-par.scw.cloud/averagemarcus/bsky-screenshot:latest
 
 .PHONY: test # Run all tests, linting and format checks
 test: lint check-format run-tests
@@ -67,7 +67,7 @@ ci:
 
 .PHONY: release # Release the latest version of the application
 release:
-	@echo "⚠️ 'release' unimplemented"
+	@kubectl --namespace bsky-screenshot set image deployment bsky-screenshot web=docker.cluster.fun/averagemarcus/bsky-screenshot:$(SHA)
 
 .PHONY: help # Show this list of commands
 help:
