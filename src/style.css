@@ -125,7 +125,6 @@ body {
   flex-wrap: wrap;
 }
 .post .images > div {
-  aspect-ratio: 1 / 1;
   flex: 1 0 48%;
 }
 .post .images img {

@@ -22,11 +22,25 @@ function setWidth(value) {
   this.style.width = `${value}px`;
 }
 
+var updateImageTimeout;
+function updateImage() {
+  if (updateImageTimeout) {
+    window.cancelAnimationFrame(updateImageTimeout);
+  }
+  updateImageTimeout = window.requestAnimationFrame(function() {
+    domtoimage.toPng(document.getElementById('post'), { cacheBust: false })
+      .then(function (dataUrl) {
+        document.getElementById('result-image').src = dataUrl;
+      });
+
+  });
+}
+[...document.querySelectorAll('#post img'), ...document.querySelectorAll('#input-form input')].forEach(el => el.addEventListener('load', updateImage));
+
 (() => {
-  var timeout;
   let {bskyPost, config} = bindIt({
     config: {
-      corsProxy: "https://corsproxy.io/?url=",
+      corsProxy: `https://corsproxy.io/?url=`,
       width: 600,
       windowDecoration: true,
       showInteractions: true
@@ -57,7 +71,6 @@ function setWidth(value) {
       }
     }
   });
-
 
   function isValidHttpUrl(string) {
     let url;
@@ -102,7 +115,7 @@ function setWidth(value) {
     bskyPost.avatar = config.corsProxy + profile.avatar;
 
     let record = await (await fetch(`https://public.api.bsky.app/xrpc/com.atproto.repo.getRecord?repo=${did}&collection=app.bsky.feed.post&rkey=${rKey}`)).json();
-    console.log(record);
+
     let parts = [];
     let body = unescape(encodeURIComponent(record.value.text));
     let offset = 0;
@@ -117,7 +130,6 @@ function setWidth(value) {
       }
     }
     parts.push(body);
-
 
     let postBody = "";
     for (let index = 0; index < parts.length; index++) {
@@ -146,17 +158,13 @@ function setWidth(value) {
 
     bskyPost.externalLink.exists = false;
     bskyPost.images.exists = false;
-    bskyPost.images.image1 = "";
-    bskyPost.images.image2 = "";
-    bskyPost.images.image3 = "";
-    bskyPost.images.image4 = "";
 
     if (record.value.embed && record.value.embed["$type"] == "app.bsky.embed.images") {
       bskyPost.images.exists = true;
-      if (record.value.embed.images.length > 0) bskyPost.images.image1 = `${config.corsProxy}https://cdn.bsky.app/img/feed_thumbnail/plain/${did}/${record.value.embed.images[0].image.ref.$link}@jpeg`;
-      if (record.value.embed.images.length > 1) bskyPost.images.image2 = `${config.corsProxy}https://cdn.bsky.app/img/feed_thumbnail/plain/${did}/${record.value.embed.images[1].image.ref.$link}@jpeg`;
-      if (record.value.embed.images.length > 2) bskyPost.images.image3 = `${config.corsProxy}https://cdn.bsky.app/img/feed_thumbnail/plain/${did}/${record.value.embed.images[2].image.ref.$link}@jpeg`;
-      if (record.value.embed.images.length > 3) bskyPost.images.image4 = `${config.corsProxy}https://cdn.bsky.app/img/feed_thumbnail/plain/${did}/${record.value.embed.images[3].image.ref.$link}@jpeg`;
+      bskyPost.images.image1 = (record.value.embed.images.length > 0) ? `${config.corsProxy}https://cdn.bsky.app/img/feed_thumbnail/plain/${did}/${record.value.embed.images[0].image.ref.$link}@jpeg` : "";
+      bskyPost.images.image2 = (record.value.embed.images.length > 1) ? `${config.corsProxy}https://cdn.bsky.app/img/feed_thumbnail/plain/${did}/${record.value.embed.images[1].image.ref.$link}@jpeg` : "";
+      bskyPost.images.image3 = (record.value.embed.images.length > 2) ? `${config.corsProxy}https://cdn.bsky.app/img/feed_thumbnail/plain/${did}/${record.value.embed.images[2].image.ref.$link}@jpeg` : "";
+      bskyPost.images.image4 = (record.value.embed.images.length > 3) ? `${config.corsProxy}https://cdn.bsky.app/img/feed_thumbnail/plain/${did}/${record.value.embed.images[3].image.ref.$link}@jpeg` : "";
     } else if (record.value.embed && record.value.embed["$type"] == "app.bsky.embed.external") {
       bskyPost.externalLink.exists = true;
       bskyPost.externalLink.title = record.value.embed.external.title;
@@ -164,20 +172,9 @@ function setWidth(value) {
       bskyPost.externalLink.domain = record.value.embed.external.uri.replaceAll("https://", "").split("/")[0];
       bskyPost.externalLink.image = `${config.corsProxy}https://cdn.bsky.app/img/feed_thumbnail/plain/${did}/${record.value.embed.external.thumb.ref["$link"]}@jpeg`;
     }
-  }
 
-  function updateImage() {
-    if (timeout) {
-      window.cancelAnimationFrame(timeout);
-    }
-    timeout = window.requestAnimationFrame(function() {
-      domtoimage.toPng(document.getElementById('post'), { cacheBust: false })
-        .then(function (dataUrl) {
-          document.getElementById('result-image').src = dataUrl;
-        });
-    });
+    updateImage();
   }
-  [...document.querySelectorAll('#post img'), ...document.querySelectorAll('#input-form input')].forEach(el => el.addEventListener("load", updateImage));
 
   document.getElementById('submit').addEventListener('click', loadPost);
   document.getElementById('post-url').addEventListener('change', loadPost);
