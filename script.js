@@ -23,6 +23,7 @@ function setWidth(value) {
 }
 
 (() => {
+  var timeout;
   let {bskyPost, config} = bindIt({
     config: {
       corsProxy: "https://corsproxy.io/?url=",
@@ -163,19 +164,20 @@ function setWidth(value) {
       bskyPost.externalLink.domain = record.value.embed.external.uri.replaceAll("https://", "").split("/")[0];
       bskyPost.externalLink.image = `${config.corsProxy}https://cdn.bsky.app/img/feed_thumbnail/plain/${did}/${record.value.embed.external.thumb.ref["$link"]}@jpeg`;
     }
-
-    updateImage();
   }
 
   function updateImage() {
-    window.requestAnimationFrame(function() {
+    if (timeout) {
+      window.cancelAnimationFrame(timeout);
+    }
+    timeout = window.requestAnimationFrame(function() {
       domtoimage.toPng(document.getElementById('post'), { cacheBust: false })
         .then(function (dataUrl) {
           document.getElementById('result-image').src = dataUrl;
         });
     });
   }
-  [...document.querySelectorAll('img')].forEach(el => el.addEventListener("load", updateImage));
+  [...document.querySelectorAll('#post img'), ...document.querySelectorAll('#input-form input')].forEach(el => el.addEventListener("load", updateImage));
 
   document.getElementById('submit').addEventListener('click', loadPost);
   document.getElementById('post-url').addEventListener('change', loadPost);
@@ -188,5 +190,4 @@ function setWidth(value) {
     link.href = document.getElementById('result-image').src;
     link.click();
   });
-
 })();
