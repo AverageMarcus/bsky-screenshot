@@ -42,6 +42,10 @@ body {
   left: -9999;
   top: -9999;
   margin-left: -10px;
+  overflow: hidden;
+}
+.post {
+  background: #fff;
 }
 
 .link {
