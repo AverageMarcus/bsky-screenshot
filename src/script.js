@@ -2,7 +2,7 @@
   let {bskyPost, config} = bindIt(
     {
       config: {
-        corsProxy: `https://corsproxy.io/?url=`,
+        corsProxy: `https://cors-proxy.cluster.fun/`,
         width: 600,
         windowTitle: "$handle", // $handle, $displayName, $url
         windowDecoration: true,
@@ -56,7 +56,13 @@
         }
       }
     },
-    updateImage
+    (prop, val) => {
+      if (prop === "config.corsProxy") {
+        loadPost();
+      } else {
+        updateImage();
+      }
+    }
   );
 
   var updateImageTimeout;

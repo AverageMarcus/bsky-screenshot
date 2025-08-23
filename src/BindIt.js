@@ -60,7 +60,7 @@ function bindIt(obj, base = '', withFuncs = {}, onUpdate = ()=>{}) {
       }
       if (onUpdate !== undefined) {
         requestAnimationFrame(() => {
-          onUpdate();
+          onUpdate(bindKey, value);
         });
       }
     });
