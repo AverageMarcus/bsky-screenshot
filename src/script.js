@@ -45,9 +45,6 @@
           this.setAttribute('src', "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==");
         }
       },
-      asHTML: function(value) {
-        this.innerHTML = value;
-      },
       setWidth: function(value) {
         this.style.width = `${value}px`;
       },
