@@ -1,76 +1,100 @@
-function imageSrc(value) {
-  if (value) {
-    this.setAttribute('src', value);
-  } else {
-    this.setAttribute('src', "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==");
-  }
-}
-
-function asHTML(value) {
-  this.innerHTML = value;
-}
-
-function shouldShow(value) {
-  if (value == false || value == "") {
-    this.style.display = 'none';
-  } else {
-    this.style.display = '';
-  }
-}
-
-function setWidth(value) {
-  this.style.width = `${value}px`;
-}
-
-var updateImageTimeout;
-function updateImage() {
-  if (updateImageTimeout) {
-    window.cancelAnimationFrame(updateImageTimeout);
-  }
-  updateImageTimeout = window.requestAnimationFrame(function() {
-    domtoimage.toPng(document.getElementById('post'), { cacheBust: false })
-      .then(function (dataUrl) {
-        document.getElementById('result-image').src = dataUrl;
-      });
-
-  });
-}
-[...document.querySelectorAll('#post img'), ...document.querySelectorAll('#input-form input')].forEach(el => el.addEventListener('load', updateImage));
-
 (() => {
-  let {bskyPost, config} = bindIt({
-    config: {
-      corsProxy: `https://corsproxy.io/?url=`,
-      width: 600,
-      windowDecoration: true,
-      showInteractions: true
-    },
-    bskyPost: {
-      url: 'https://bsky.app/profile/averagemarcus.bsky.social/post/3lwyxxwjnxc2k',
-      handle: '',
-      displayName: '',
-      avatar: '',
-      text: '',
-      createdAt: '',
-      likes: 0,
-      reposts: 0,
-      replies: 0,
-      externalLink: {
-        exists: false,
-        title: "",
-        description: "",
-        image: "",
-        domain: ""
+  let {bskyPost, config} = bindIt(
+    {
+      config: {
+        corsProxy: `https://corsproxy.io/?url=`,
+        width: 600,
+        windowTitle: "$handle", // $handle, $displayName, $url
+        windowDecoration: true,
+        showInteractions: true,
+        showDate: true,
+        showBorder: true
       },
-      images: {
-        exists: false,
-        image1: "",
-        image2: "",
-        image3: "",
-        image4: "",
+      bskyPost: {
+        url: 'https://bsky.app/profile/averagemarcus.bsky.social/post/3lwyxxwjnxc2k',
+        handle: '',
+        displayName: '',
+        avatar: '',
+        text: '',
+        createdAt: '',
+        likes: 0,
+        reposts: 0,
+        replies: 0,
+        externalLink: {
+          exists: false,
+          title: "",
+          description: "",
+          image: "",
+          domain: ""
+        },
+        images: {
+          exists: false,
+          image1: "",
+          image2: "",
+          image3: "",
+          image4: "",
+        }
       }
+    },
+    "",
+    {
+      imageSrc: function(value) {
+        if (value) {
+          this.setAttribute('src', value);
+        } else {
+          this.setAttribute('src', "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==");
+        }
+      },
+      asHTML: function(value) {
+        this.innerHTML = value;
+      },
+      setWidth: function(value) {
+        this.style.width = `${value}px`;
+      },
+      showBorder: function(value) {
+        if (value) {
+          this.style.borderStyle = "double";
+        } else {
+          this.style.borderStyle = "none";
+        }
+      }
+    },
+    updateImage
+  );
+
+  var updateImageTimeout;
+  function updateImage() {
+    if (updateImageTimeout) {
+      window.cancelAnimationFrame(updateImageTimeout);
     }
-  });
+    setWindowTitle();
+    updateImageTimeout = window.requestAnimationFrame(function() {
+      domtoimage.toPng(document.getElementById('post'), { cacheBust: false })
+        .then(function (dataUrl) {
+          document.getElementById('result-image').src = dataUrl;
+        });
+
+    });
+  }
+  [...document.querySelectorAll('#post img')].forEach(el => el.addEventListener('load', updateImage));
+  [...document.querySelectorAll('#input-form input')].forEach(el => el.addEventListener('change', updateImage));
+
+  function setWindowTitle() {
+    switch (config.windowTitle) {
+      case "$handle":
+        document.querySelector('.windowDecoration .title').innerText = bskyPost.handle;
+        break;
+      case "$displayName":
+        document.querySelector('.windowDecoration .title').innerText = bskyPost.displayName;
+        break;
+      case "$url":
+        document.querySelector('.windowDecoration .title').innerText = bskyPost.url.replaceAll("https://", "");
+        break;
+      default:
+        document.querySelector('.windowDecoration .title').innerText = config.windowTitle;
+        break;
+    }
+  }
 
   function isValidHttpUrl(string) {
     let url;
@@ -176,9 +200,13 @@ function updateImage() {
     updateImage();
   }
 
-  document.getElementById('submit').addEventListener('click', loadPost);
   document.getElementById('post-url').addEventListener('change', loadPost);
   document.getElementById('post-url').addEventListener('keyup', loadPost);
+  document.getElementById('post-url').addEventListener('paste', (ev) =>{
+    let data = ev.clipboardData.getData("text/plain");
+    document.getElementById('post-url').value = data;
+    loadPost();
+  });
   window.requestAnimationFrame(loadPost);
 
   document.getElementById('download').addEventListener('click', function() {
@@ -187,4 +215,8 @@ function updateImage() {
     link.href = document.getElementById('result-image').src;
     link.click();
   });
+
+  window.debugBskyPost = function() {
+    console.log(bskyPost, config);
+  }
 })();

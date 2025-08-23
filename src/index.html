@@ -38,33 +38,34 @@
       <div class="column">
         <div class="form">
           <input type="text" id="post-url" bind-it-to="bskyPost.url" bind-it-with="value" />
-          <button id="submit">Fetch</button>
         </div>
-        <!-- Config is still WiP -->
-        <!--
-          <details>
+          <details class="config">
             <summary>Advanced Config</summary>
             <div>
-              <label>CORS Proxy: <input type="text" bind-it-to="config.corsProxy" bind-it-with="value" bind-it-two-way /></label>
-              <label>Width: <input type="number" bind-it-to="config.width" bind-it-with="value" bind-it-two-way /></label>
-              <label>Window Decoration: <input type="checkbox" bind-it-to="config.windowDecoration" bind-it-with="checked" bind-it-two-way /></label>
+              <label><span>CORS Proxy:</span><input type="text" bind-it-to="config.corsProxy" bind-it-with="value" bind-it-two-way /></label>
+              <label><span>Width:</span><input type="number" bind-it-to="config.width" bind-it-with="value" bind-it-two-way /></label>
+              <label><span>Title:</span><input type="text" bind-it-to="config.windowTitle" bind-it-with="value" bind-it-two-way /></label>
+              <label><span>Window Decoration:</span><input type="checkbox" bind-it-to="config.windowDecoration" bind-it-with="checked" bind-it-two-way /></label>
+              <label><span>Show Border:</span><input type="checkbox" bind-it-to="config.showBorder" bind-it-with="checked" bind-it-two-way /></label>
+              <label><span>Interactions:</span><input type="checkbox" bind-it-to="config.showInteractions" bind-it-with="checked" bind-it-two-way /></label>
+              <label><span>Post Date:</span><input type="checkbox" bind-it-to="config.showDate" bind-it-with="checked" bind-it-two-way /></label>
             </div>
           </details>
-        -->
       </div>
     </div>
+
     <div class="row">
       <div class="column post-wrapper">
 
-        <div id="post" bind-it-to="config.width" bind-it-with="setWidth">
-          <div class="post border" bind-it-to="config.width" bind-it-with="setWidth">
-            <div class="windowDecoration" bind-it-to="config.windowDecoration" bind-it-with="shouldShow">
+        <div id="post" class="border"  bind-it-to="config.showBorder" bind-it-with="showBorder">
+          <div class="post" bind-it-to="config.width" bind-it-with="setWidth">
+            <div class="windowDecoration" bind-it-to="config.windowDecoration" bind-it-with="visible">
               <div class="buttons">
                 <div class="roundButton" style="background-color: #ff544d; border-color: #dd3a33"></div>
                 <div class="roundButton" style="background-color: #feb429; border-color: #da9211"></div>
                 <div class="roundButton" style="background-color: #d9d8d7; border-color: #b7b5b5"></div>
               </div>
-              <div class="title" bind-it-to="bskyPost.handle"></div>
+              <div class="title"></div>
               <div class="spacer"></div>
             </div>
             <div class="header">
@@ -77,21 +78,21 @@
             <div class="body" bind-it-to="bskyPost.text" bind-it-with="asHTML"></div>
 
             <div class="embeds">
-              <div class="images" bind-it-to="bskyPost.images.exists" bind-it-with="shouldShow">
-                <div bind-it-to="bskyPost.images.image1" bind-it-with="shouldShow">
+              <div class="images" bind-it-to="bskyPost.images.exists" bind-it-with="visible">
+                <div bind-it-to="bskyPost.images.image1" bind-it-with="visible">
                   <img bind-it-to="bskyPost.images.image1" bind-it-with="imageSrc" />
                 </div>
-                <div bind-it-to="bskyPost.images.image2" bind-it-with="shouldShow">
+                <div bind-it-to="bskyPost.images.image2" bind-it-with="visible">
                   <img bind-it-to="bskyPost.images.image2" bind-it-with="imageSrc" />
                 </div>
-                <div bind-it-to="bskyPost.images.image3" bind-it-with="shouldShow">
+                <div bind-it-to="bskyPost.images.image3" bind-it-with="visible">
                   <img bind-it-to="bskyPost.images.image3" bind-it-with="imageSrc" />
                 </div>
-                <div bind-it-to="bskyPost.images.image4" bind-it-with="shouldShow">
+                <div bind-it-to="bskyPost.images.image4" bind-it-with="visible">
                   <img bind-it-to="bskyPost.images.image4" bind-it-with="imageSrc" />
                 </div>
               </div>
-              <div class="externalLink" bind-it-to="bskyPost.externalLink.exists" bind-it-with="shouldShow">
+              <div class="externalLink" bind-it-to="bskyPost.externalLink.exists" bind-it-with="visible">
                 <img id="externalLinkImage" bind-it-to="bskyPost.externalLink.image" bind-it-with="imageSrc" />
                 <div class="linkMeta">
                   <div class="linkTitle" bind-it-to="bskyPost.externalLink.title"></div>
@@ -105,7 +106,7 @@
             </div>
 
             <div class="footer">
-              <div class="interactions" bind-it-to="config.interactions" bind-it-with="shouldShow">
+              <div class="interactions" bind-it-to="config.showInteractions" bind-it-with="visible">
                 <span class="replies">
                   <svg fill="none" width="18" viewBox="0 0 24 24" height="18" style="color: rgb(111, 134, 159); pointer-events: none;"><path fill="hsl(211, 20%, 53%)" fill-rule="evenodd" clip-rule="evenodd" d="M2.002 6a3 3 0 0 1 3-3h14a3 3 0 0 1 3 3v10a3 3 0 0 1-3 3H12.28l-4.762 2.858A1 1 0 0 1 6.002 21v-2h-1a3 3 0 0 1-3-3V6Zm3-1a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h2a1 1 0 0 1 1 1v1.234l3.486-2.092a1 1 0 0 1 .514-.142h7a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h-14Z"></path></svg>
                   <span bind-it-to="bskyPost.replies"></span> replies
@@ -119,14 +120,15 @@
                   <span bind-it-to="bskyPost.likes"></span> likes
                 </span>
               </div>
-              <div class="createdAt" bind-it-to="bskyPost.createdAt"></div>
+              <div bind-it-to="config.showDate" bind-it-with="visible">
+                <div class="createdAt" bind-it-to="bskyPost.createdAt"></div>
+              </div>
             </div>
           </div>
         </div>
 
       </div>
     </div>
-
 
     <div class="row">
       <div class="column">
@@ -139,17 +141,14 @@
         <button id="download">Download Image</button>
       </div>
     </div>
-
-    <div class="container">
-      <div class="row">
-        <div class="column column-60 column-offset-20" style="text-align: center;">
-          Source code available on <a href="https://github.com/AverageMarcus/bsky-screenshot" target="_blank" rel="noopener noreferrer">GitHub</a>, <a href="https://gitlab.com/AverageMarcus/bsky-screenshot" target="_blank" rel="noopener noreferrer">GitLab</a>, <a href="https://bitbucket.org/AverageMarcus/bsky-screenshot/" target="_blank" rel="noopener noreferrer">Bitbucket</a> & <a href="https://git.cluster.fun/AverageMarcus/bsky-screenshot" target="_blank" rel="noopener noreferrer">my own Gitea server</a>.
-        </div>
-      </div>
-    </div>
   </div>
 
   <div class="container">
+    <div class="row">
+      <div class="column column-60 column-offset-20" style="text-align: center;">
+        Source code available on <a href="https://github.com/AverageMarcus/bsky-screenshot" target="_blank" rel="noopener noreferrer">GitHub</a>, <a href="https://gitlab.com/AverageMarcus/bsky-screenshot" target="_blank" rel="noopener noreferrer">GitLab</a>, <a href="https://bitbucket.org/AverageMarcus/bsky-screenshot/" target="_blank" rel="noopener noreferrer">Bitbucket</a> & <a href="https://git.cluster.fun/AverageMarcus/bsky-screenshot" target="_blank" rel="noopener noreferrer">my own Gitea server</a>.
+      </div>
+    </div>
     <div class="row">
       <div class="column column-60 column-offset-20">
         <footer>

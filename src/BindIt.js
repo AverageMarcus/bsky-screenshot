@@ -1,8 +1,15 @@
-function bindIt(obj, base = '') {
+function bindIt(obj, base = '', withFuncs = {}, onUpdate = ()=>{}) {
+  let arrayHandler = {
+    apply: function (fn, arr, argumentsList) {
+      obj[prop]._push(argumentsList);
+      triggerUpdate(bindKey, obj[prop]);
+    }
+  };
+
   for (let key in obj) {
     // Make sure all child objects are proxied too
     if (obj.hasOwnProperty(key) && Object.prototype.toString.call(obj[key]) === '[object Object]') {
-      obj[key] = bindIt(obj[key], `${base ? base + '.' : ''}${key}`);
+      obj[key] = bindIt(obj[key], `${base ? base + '.' : ''}${key}`, withFuncs, onUpdate);
     }
     // ...as well as arrays
     if (obj.hasOwnProperty(key) && Object.prototype.toString.call(obj[key]) === '[object Array]') {
@@ -11,12 +18,6 @@ function bindIt(obj, base = '') {
   }
 
   function wrapArray(obj, prop, bindKey) {
-    let arrayHandler = {
-      apply: function (fn, arr, argumentsList) {
-        obj[prop]._push(argumentsList);
-        triggerUpdate(bindKey, obj[prop]);
-      }
-    };
     if (Object.prototype.toString.call(obj[prop]) === '[object Array]') {
       obj[prop]._push = obj[prop].push;
       obj[prop].push = new Proxy(obj[prop].push, arrayHandler);
@@ -32,16 +33,35 @@ function bindIt(obj, base = '') {
           case 'innerText':
             element.innerText = value;
             break;
+          case 'innerHTML':
+            element.innerHTML = value;
+            break;
           case 'value':
             element.value = value;
             break;
+          case 'checked':
+            element.checked = value;
+            break;
+          case 'visible':
+            if (value == false || value == "") {
+              element.style.display = 'none';
+            } else {
+              element.style.display = '';
+            }
+            break;
           default:
-            if (typeof window[bindType] === 'function') {
+            if (typeof withFuncs[bindType] === 'function') {
+              withFuncs[bindType].apply(element, [value]);
+            } else if (typeof window[bindType] === 'function') {
               window[bindType].apply(element, [value]);
             }
             break;
         }
-
+      }
+      if (onUpdate !== undefined) {
+        requestAnimationFrame(() => {
+          onUpdate();
+        });
       }
     });
   }
@@ -50,7 +70,7 @@ function bindIt(obj, base = '') {
     get: function (obj, key) {
       if (typeof key === 'string') {
         // Ensure safe deep get/set (no need to set up the structute)
-        if (obj[key] === undefined) obj[key] = bindIt({}, `${base ? base + '.' : ''}${key}`);
+        if (obj[key] === undefined) obj[key] = bindIt({}, `${base ? base + '.' : ''}${key}`, withFuncs, onUpdate);
         return obj[key];
       }
     },
@@ -83,10 +103,33 @@ function bindIt(obj, base = '') {
     }
 
     let twoWayElements = document.querySelectorAll(`[bind-it-two-way]`);
+    const setObjPath = (t, path, value) => {
+      if (typeof t != "object") throw Error("non-object")
+      if (path == "") throw Error("empty path")
+      const pos = path.indexOf(".")
+      return pos == -1
+        ? (t[path] = value, value)
+        : setObjPath(t[path.slice(0, pos)], path.slice(pos + 1), value)
+    }
     for (let element of twoWayElements) {
       element.addEventListener('change', function () {
         let prop = this.getAttribute('bind-it-to');
-        proxied[prop] = this.value
+        let bindType = this.getAttribute('bind-it-with') || 'value';
+
+        switch (bindType) {
+          case 'innerText':
+            setObjPath(proxied, prop, this.innerText);
+            break;
+          case 'innerHTML':
+            setObjPath(proxied, prop, this.innerHTML);
+            break;
+          case 'checked':
+            setObjPath(proxied, prop, this.checked);
+            break;
+          default:
+            setObjPath(proxied, prop, this.value);
+            break;
+        }
       });
     }
   }
